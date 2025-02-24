@@ -10,7 +10,7 @@ const app = express();
 app.use(status());
 
 // 1. Reading stream for sample.txt
-// 2. zipping chunk data
+// 2. zipping data in chunk
 // 3. writing chunk data in sample.zip
 fs.createReadStream("./sample.txt").pipe(
   zlib.createGzip().pipe(fs.createWriteStream("./sample.zip"))

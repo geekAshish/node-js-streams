@@ -1,4 +1,4 @@
-import fs, { write } from "node:fs";
+import fs from "node:fs";
 import zlib from "node:zlib"; // if you want to zip file without memory usages
 
 import express from "express";
@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
   readStream.on('data', (chunk) => {
     // console.log('chunk: buffer', chunk);
     // console.log('chunk: string', chunk.toString());
-     
+
     writeStream.write(chunk);
   });
 

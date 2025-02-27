@@ -4,3 +4,11 @@
 
 - request and response on http server, net, Zlib, crypto are also streams
 - Request is readable stream, and Response is writable stream
+
+# High watermark
+- https://stackoverflow.com/questions/35801568/stream-highwatermark-misunderstanding
+
+
+
+
+

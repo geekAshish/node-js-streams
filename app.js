@@ -3,6 +3,7 @@ import zlib from "node:zlib"; // if you want to zip file without memory usages
 
 import express from "express";
 import status from "express-status-monitor";
+import { pipeline, Transform } from "node:stream";
 
 const PORT = 8000;
 
@@ -52,6 +53,62 @@ app.get("/", (req, res) => {
   res.end();
 
 });
+
+app.get('/string-processing', (req, res) => {
+  const sampleFileStream = fs.createReadStream('sample.txt');
+  const outputWritableStream = fs.createReadStream('output.txt');
+
+  // 1.
+  sampleFileStream.on('data', (chunk) => {
+    // processing
+    const finalString = chunk.toString().replaceAll(/ipsum/gi, 'cool').toUpperCase();
+
+    // writable stream write
+    outputWritableStream.write(finalString);
+  })
+
+  // 2.
+  sampleFileStream.pipe(outputWritableStream)
+
+  // 3. using transform
+  const replaceWordProcessing = new Transform({
+    transform(chunk, encoding, callback) {
+      replaceWordProcessing.emit('error', new Error('Something went wrong!'))
+      const finalString = chunk.toString().replaceAll(/ipsum/gi, 'cool');
+      callback(null, finalString);
+    }
+  })
+  const upperCaseWordProcessing = new Transform({
+    transform(chunk, encoding, callback) {
+      const finalString = chunk.toString().toUpperCase();
+      callback(null, finalString);
+    }
+  })
+
+  // i. pipe
+  // sampleFileStream
+  //   .pipe(replaceWordProcessing)
+  //   .on('error', (err) => {
+  //     console.log(err);
+      
+  //   })
+  //   .pipe(upperCaseWordProcessing)
+  //   .pipe(outputWritableStream);
+
+  // or ii. pipeline
+  pipeline(
+    sampleFileStream,
+    replaceWordProcessing,
+    upperCaseWordProcessing,
+    outputWritableStream,
+    (err) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  )
+
+})
 
 app.listen(PORT, () => {
   console.log(`app is listing on PORT: ${PORT}`);

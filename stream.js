@@ -4,6 +4,7 @@ const readableStream = new Readable({
   // It's in bits, It's threshold not limit, we can push more bits then 2
   // by default 64kb
   highWaterMark: 2,
+  // objectMode: true, // while objectMode: true, highWaterMark count as object number
   read() {},
 });
 
